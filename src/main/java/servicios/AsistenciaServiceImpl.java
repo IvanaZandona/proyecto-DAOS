@@ -1,6 +1,6 @@
 package servicios;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,90 +18,75 @@ import presentacion.AsistenciaDTO;
 
 @Service
 public class AsistenciaServiceImpl implements AsistenciaService {
-	
-	@Autowired
-	private AsistenciaRepository asisRepo;
 
-	@Autowired
-	private AsistidoRepository a;
-	
-	@Autowired
-	private RacionRepository r;
-	
-	@Override
-	public List<Asistencia> getall() {
-		return asisRepo.findAll();
-	}
+    @Autowired
+    private AsistenciaRepository asisRepo;
 
-	@Override
-	public Optional<Asistencia> getById(Long id) {
-		return asisRepo.findById(id);
-	}
-	
-	@Override
-	public Optional<Asistencia> getByFecha(Date fechaEntrega) {
-		return asisRepo.findByFecha(fechaEntrega);
-	}
-	
+    @Autowired
+    private AsistidoRepository a;
 
-	
-	@Override
-	public Long insert(AsistenciaDTO dto) throws Exception {
+    @Autowired
+    private RacionRepository r;
 
-	    // Buscar Asistido
-	    Asistido asistido = a.findById(dto.getIdAsistido())
-	        .orElseThrow(() -> new Excepcion("Asistido", "No encontrado", 404));
+    @Override
+    public List<Asistencia> getall() {
+        return asisRepo.findAll();
+    }
 
-	    // Buscar Ración
-	    Racion racion = r.findById(dto.getIdRacion())
-	        .orElseThrow(() -> new Excepcion("Racion", "No encontrada", 404));
+    @Override
+    public Optional<Asistencia> getById(Long id) {
+        return asisRepo.findById(id);
+    }
 
-	    // Crear asistencia
-	    Asistencia asistencia = new Asistencia();
-	    asistencia.setFechaEntrega(dto.getFechaEntrega());
-	    asistencia.setAsistido(asistido);
-	    asistencia.setRacion(racion);
+    @Override
+    public Optional<Asistencia> getByFechaEntrega(LocalDate fechaEntrega) {
+        return asisRepo.findByFechaEntrega(fechaEntrega);
+    }
 
-	    // Guardar en la BD
-	    asistencia = asisRepo.save(asistencia);
+    @Override
+    public Long insert(AsistenciaDTO dto) throws Exception {
+        
+        Asistido asistido = a.findById(dto.getIdAsistido())
+            .orElseThrow(() -> new Excepcion("Asistido", "No encontrado", 404));
 
-	    return asistencia.getId();
-	}
+        Racion racion = r.findById(dto.getIdRacion())
+            .orElseThrow(() -> new Excepcion("Racion", "No encontrada", 404));
 
+        Asistencia asistencia = new Asistencia();
+        asistencia.setFechaEntrega(dto.getFechaEntrega());
+        asistencia.setAsistido(asistido);
+        asistencia.setRacion(racion);
 
-	@Override
-	public Asistencia update(AsistenciaDTO dto, Long id) throws Exception {
+        asistencia = asisRepo.save(asistencia);
 
-	    Asistencia asistencia = asisRepo.findById(id)
-	            .orElseThrow(() -> new Excepcion("Asistencia", "No existe una asistencia con ese id", 404));
+        return asistencia.getId();
+    }
 
-	    Asistido asistido = a.findById(dto.getIdAsistido())
-	            .orElseThrow(() -> new Excepcion("Asistido", "No existe un asistido con ese id", 404));
+    @Override
+    public Asistencia update(AsistenciaDTO dto, Long id) throws Exception {
 
-	    Racion racion = r.findById(dto.getIdRacion())
-	            .orElseThrow(() -> new Excepcion("Ración", "No encontrada", 404));
+        Asistencia asistencia = asisRepo.findById(id)
+            .orElseThrow(() -> new Excepcion("Asistencia", "No existe una asistencia con ese id", 404));
 
-	    asistencia.setAsistido(asistido);
-	    asistencia.setFechaEntrega(dto.getFechaEntrega());
-	    asistencia.setRacion(racion);
+        Asistido asistido = a.findById(dto.getIdAsistido())
+            .orElseThrow(() -> new Excepcion("Asistido", "No existe un asistido con ese id", 404));
 
-	    return asisRepo.save(asistencia);
-	}
+        Racion racion = r.findById(dto.getIdRacion())
+            .orElseThrow(() -> new Excepcion("Racion", "No encontrada", 404));
 
-	
-	
-	
-	
-	
-	@Override
-	public void delete(Long id) {
-		asisRepo.deleteById(id);
-	}
+        asistencia.setAsistido(asistido);
+        asistencia.setFechaEntrega(dto.getFechaEntrega());
+        asistencia.setRacion(racion);
 
-	
-	
+        return asisRepo.save(asistencia);
+    }
 
-	
-	}
+    @Override
+    public void delete(Long id) {
+        asisRepo.deleteById(id);
+    }
+
+}
+
 
 

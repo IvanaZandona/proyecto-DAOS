@@ -2,7 +2,8 @@ package servicios;
 
 
 
-import java.util.Date;
+import java.time.LocalDate;
+
 import java.util.List;
 
 import java.util.Optional;
@@ -13,7 +14,10 @@ import presentacion.AsistenciaDTO;
 public interface AsistenciaService {
 	List<Asistencia> getall();
 	Optional<Asistencia> getById(Long id);
-	Optional<Asistencia> getByFecha(Date fechaEntrega);
+	
+	Optional<Asistencia> getByFechaEntrega(LocalDate fechaEntrega);
+	    
+
 	 Long insert(AsistenciaDTO dto) throws Exception;
 	    Asistencia update(AsistenciaDTO dto, Long id) throws Exception;
 	void delete (Long id);

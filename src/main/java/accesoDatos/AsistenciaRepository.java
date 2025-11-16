@@ -15,9 +15,9 @@ import entidades.Asistencia;
 @Repository
 public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
 	
-	Optional<Asistencia> findByFecha(Date fechaEntrega);
+	Optional<Asistencia> findByFechaEntrega(LocalDate fechaEntrega);
 
-    Optional<Asistencia> findById(LocalDate localDate);
+    Optional<Asistencia> findById(Long id);
 
   //  boolean existsByNombreCompleto(String nombreCompleto);
 	
