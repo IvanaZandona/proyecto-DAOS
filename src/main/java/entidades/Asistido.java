@@ -30,6 +30,12 @@ public class Asistido {
 
     @Column(name = "id_ciudad", nullable = false)
     private Long idCiudad;
+    
+    
+    //Agregado clase asistencia
+    
+    @OneToOne(mappedBy = "asistido")
+    private Asistencia asistencia;
 
     public Asistido() {}
 
@@ -55,4 +61,14 @@ public class Asistido {
 
     public Long getIdCiudad() { return idCiudad; }
     public void setIdCiudad(Long idCiudad) { this.idCiudad = idCiudad; }
+
+	public Asistencia getAsistencia() {
+		return asistencia;
+	}
+
+	public void setAsistencia(Asistencia asistencia) {
+		this.asistencia = asistencia;
+	}
+    
+    
 }
