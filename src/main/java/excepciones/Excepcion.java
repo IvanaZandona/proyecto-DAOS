@@ -1,6 +1,8 @@
-package exepciones;
+package excepciones;
 
 public class Excepcion extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+	
     private String entidad;
     private int codigo;
 

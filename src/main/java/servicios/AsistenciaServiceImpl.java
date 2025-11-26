@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import entidades.Asistencia;
 import entidades.Asistido;
 import entidades.Racion;
+import excepciones.Excepcion;
 import accesoDatos.AsistenciaRepository;
 import accesoDatos.AsistidoRepository;
 import accesoDatos.RacionRepository;
-import exepciones.Excepcion;
 import presentacion.AsistenciaDTO;
 
 @Service

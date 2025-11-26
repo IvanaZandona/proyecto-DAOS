@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import accesoDatos.AsistidoRepository;
 import accesoDatos.CiudadRepository;
 import entidades.Asistido;
-import exepciones.Excepcion;
+import excepciones.Excepcion;
 import presentacion.AsistidoDTO;
 
 @Service
