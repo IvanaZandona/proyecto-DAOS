@@ -1,6 +1,7 @@
 package tuti.daos.scripts;
 
 import accesoDatos.*;
+
 import entidades.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,15 @@ public class DataLoader implements CommandLineRunner {
     private final AsistidoRepository asistidoRepo;
     private final RecetaRepository recetaRepo;
     private final RacionRepository racionRepo;
+    private final AsistenciaRepository asistenciaRepo;
 
     public DataLoader(CiudadRepository ciudadRepo, AsistidoRepository asistidoRepo,
-                      RecetaRepository recetaRepo, RacionRepository racionRepo) {
+                      RecetaRepository recetaRepo, RacionRepository racionRepo,AsistenciaRepository asistenciaRepo ) {
         this.ciudadRepo = ciudadRepo;
         this.asistidoRepo = asistidoRepo;
         this.recetaRepo = recetaRepo;
         this.racionRepo = racionRepo;
+        this.asistenciaRepo = asistenciaRepo;
     }
 
     @Override
@@ -103,5 +106,28 @@ public class DataLoader implements CommandLineRunner {
                 racionRepo.save(r3);
             }
         }
+    
+    if (asistenciaRepo.count() == 0) {
+    	
+    	
+    	 List<Asistido> asistidos = asistidoRepo.findAll();
+    	    List<Racion> raciones = racionRepo.findAll();
+
+    	    if (!asistidos.isEmpty() && !raciones.isEmpty()) {
+
+    	        Asistencia asis = new Asistencia();
+    	        asis.setAsistido(asistidos.get(0));   // Primer asistido cargado
+    	        asis.setRacion(raciones.get(0));      // Primera ración cargada
+    	        asis.setFechaEntrega(LocalDate.now()); // Fecha de hoy
+
+    	        asistenciaRepo.save(asis);
+
+    	        System.out.println("Asistencia inicial creada correctamente.");
+    	    }
+    	
+    }
+    
+    
+        
     }
 }

@@ -14,37 +14,56 @@ import entidades.Asistencia;
 import servicios.AsistenciaService;
 
 @RestController
-@RequestMapping("/api/asistencia")
+@RequestMapping("/api/asistencias")
 public class AsistenciaController {
 
 	@Autowired
 	private AsistenciaService asistenciaService;
 	
 	@GetMapping
-	public ResponseEntity<List<Asistencia>> listarTodas(){
-		
-		
-		return ResponseEntity.ok(asistenciaService.getall());
+	public ResponseEntity<List<AsistenciaResponseDTO>> listarTodas() {
+
+	    List<AsistenciaResponseDTO> lista = asistenciaService.getall()
+	            .stream()
+	            .map(a -> {
+	                AsistenciaResponseDTO dto = new AsistenciaResponseDTO(a);
+	                dto.add(Link.of("/api/asistencias/" + a.getId()).withSelfRel());
+	                dto.add(Link.of("/api/asistidos/" + a.getAsistido().getId()).withRel("asistido"));
+	                dto.add(Link.of("/api/recetas/" + a.getRacion().getReceta().getId()).withRel("receta"));
+	                return dto;
+	            })
+	            .toList();
+
+	    return ResponseEntity.ok(lista);
 	}
+
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> buscarPorId(@PathVariable Long id){
-		
-		Optional<Asistencia> asistenciaOpt = asistenciaService.getById(id);
-		
-		if(asistenciaOpt.isEmpty()) 
-			return ResponseEntity.notFound().build();
-		
-		
-		Asistencia asistencia = asistenciaOpt.get();
-		
-		AsistenciaResponseDTO dto = new AsistenciaResponseDTO(asistencia);
-		
-		dto.add(Link.of("/api/asistencias/" + id).withSelfRel());
-		dto.add(Link.of("/api/asistidos?asistenciaId=" + id).withRel("asistidos"));
-		
-		return ResponseEntity.ok(dto);
+	public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+
+	    Optional<Asistencia> asistenciaOpt = asistenciaService.getById(id);
+
+	    if (asistenciaOpt.isEmpty())
+	        return ResponseEntity.notFound().build();
+
+	    Asistencia asistencia = asistenciaOpt.get();
+	    AsistenciaResponseDTO dto = new AsistenciaResponseDTO(asistencia);
+
+	    // Link a la asistencia (self)
+	    dto.add(Link.of("/api/asistencias/" + id).withSelfRel());
+
+	    // Link al asistido
+	    dto.add(Link.of("/api/asistidos/" + asistencia.getAsistido().getId())
+	            .withRel("asistido"));
+
+	    // Link a la receta
+	    dto.add(Link.of("/api/recetas/" +
+	                    asistencia.getRacion().getReceta().getId())
+	            .withRel("receta"));
+
+	    return ResponseEntity.ok(dto);
 	}
+
 	
 	@PostMapping
 	public ResponseEntity<?> crearAsis (@RequestBody AsistenciaDTO dto){

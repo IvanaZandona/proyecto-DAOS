@@ -51,6 +51,14 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
         Racion racion = r.findById(dto.getIdRacion())
             .orElseThrow(() -> new Excepcion("Racion", "No encontrada", 404));
+        
+        
+        // VALIDAR FECHA DE RACIÓN
+        if (dto.getFechaEntrega().isAfter(racion.getFechaVencimiento())) {
+            throw new Excepcion("FechaEntrega", 
+                "La fecha de entrega NO puede ser posterior a la fecha de vencimiento de la ración", 
+                400);
+        }
 
         Asistencia asistencia = new Asistencia();
         asistencia.setFechaEntrega(dto.getFechaEntrega());
@@ -73,6 +81,13 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
         Racion racion = r.findById(dto.getIdRacion())
             .orElseThrow(() -> new Excepcion("Racion", "No encontrada", 404));
+        
+     // VALIDAR FECHA DE RACIÓN
+        if (dto.getFechaEntrega().isAfter(racion.getFechaVencimiento())) {
+            throw new Excepcion("FechaEntrega", 
+                "La fecha de entrega NO puede ser posterior a la fecha de vencimiento de la ración", 
+                400);
+        }
 
         asistencia.setAsistido(asistido);
         asistencia.setFechaEntrega(dto.getFechaEntrega());

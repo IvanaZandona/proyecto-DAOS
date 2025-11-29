@@ -13,7 +13,10 @@ public class AsistenciaDTO {
     private Long idRacion;
     private Long idAsistido;
     private LocalDate fechaEntrega;
+    
 
+    
+    //GETTERS Y SETTERS
     public LocalDate getFechaEntrega() { return fechaEntrega; }
     public void setFechaEntrega(LocalDate fechaEntrega) { this.fechaEntrega = fechaEntrega; }
 
