@@ -1,6 +1,7 @@
 package presentacion;
 
 import jakarta.validation.constraints.*;
+import entidades.Receta;
 
 public class RecetaDTO {
 
@@ -21,4 +22,13 @@ public class RecetaDTO {
     public void setPesoRacion(Double pesoRacion) { this.pesoRacion = pesoRacion; }
     public Integer getCaloriasRacion() { return caloriasRacion; }
     public void setCaloriasRacion(Integer caloriasRacion) { this.caloriasRacion = caloriasRacion; }
+    
+    // Método  convertir DTO a una Entidad (POJO)
+    public Receta toPojo() {
+        Receta receta = new Receta();
+        receta.setNombre(this.nombre);
+        receta.setPesoRacion(this.pesoRacion);
+        receta.setCaloriasRacion(this.caloriasRacion);
+        return receta;
+    }
 }

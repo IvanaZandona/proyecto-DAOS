@@ -14,6 +14,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     // 1-- MANEJO DE VALIDACIONES (DTOs vacíos, nulos, negativos, etc.)
+	// Este método captura cuando fallan las anotaciones del DTO (@NotBlank, @Positive, etc.)
+	// el profe usaba "ErrorAtributo" para este manejo
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new HashMap<>();
@@ -26,6 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     // 2-- MANEJO DE EXCEPCIÓN PERSONALIZADA (clase Excepcion.java)
+    // útil y necesario para atrapar errores que no sean de validación (como lógica de negocio)
     @ExceptionHandler(Excepcion.class)
     public ResponseEntity<Map<String, Object>> handleExcepcionPropia(Excepcion ex) {
         Map<String, Object> respuesta = new HashMap<>();
