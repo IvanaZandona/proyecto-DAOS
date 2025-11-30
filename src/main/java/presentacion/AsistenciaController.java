@@ -14,7 +14,7 @@ import entidades.Asistencia;
 import servicios.AsistenciaService;
 
 @RestController
-@RequestMapping("/api/asistencias")
+@RequestMapping("/asistencias")
 public class AsistenciaController {
 
 	@Autowired
@@ -27,9 +27,9 @@ public class AsistenciaController {
 	            .stream()
 	            .map(a -> {
 	                AsistenciaResponseDTO dto = new AsistenciaResponseDTO(a);
-	                dto.add(Link.of("/api/asistencias/" + a.getId()).withSelfRel());
-	                dto.add(Link.of("/api/asistidos/" + a.getAsistido().getId()).withRel("asistido"));
-	                dto.add(Link.of("/api/recetas/" + a.getRacion().getReceta().getId()).withRel("receta"));
+	                dto.add(Link.of("/asistencias/" + a.getId()).withSelfRel());
+	                dto.add(Link.of("/asistidos/" + a.getAsistido().getId()).withRel("asistido"));
+	                dto.add(Link.of("/recetas/" + a.getRacion().getReceta().getId()).withRel("receta"));
 	                return dto;
 	            })
 	            .toList();
@@ -50,14 +50,14 @@ public class AsistenciaController {
 	    AsistenciaResponseDTO dto = new AsistenciaResponseDTO(asistencia);
 
 	    // Link a la asistencia (self)
-	    dto.add(Link.of("/api/asistencias/" + id).withSelfRel());
+	    dto.add(Link.of("/asistencias/" + id).withSelfRel());
 
 	    // Link al asistido
-	    dto.add(Link.of("/api/asistidos/" + asistencia.getAsistido().getId())
+	    dto.add(Link.of("/asistidos/" + asistencia.getAsistido().getId())
 	            .withRel("asistido"));
 
 	    // Link a la receta
-	    dto.add(Link.of("/api/recetas/" +
+	    dto.add(Link.of("/recetas/" +
 	                    asistencia.getRacion().getReceta().getId())
 	            .withRel("receta"));
 
