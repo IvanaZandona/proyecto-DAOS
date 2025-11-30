@@ -34,26 +34,28 @@ public class AsistidoServiceImpl implements AsistidoService {
     @Override
     public Long insert(AsistidoDTO dto) throws Exception {
 
-        
+        if (dto.getNombreCompleto() == null || dto.getNombreCompleto().isBlank()) {
+            throw new Excepcion("Asistido", "El asistido debe tener un nombre completo", 400);
+        }
+
+        if (dto.getEdad() == null || dto.getEdad() <= 0) {
+            throw new Excepcion("Asistido", "La edad es obligatoria y debe ser mayor a cero", 400);
+        }
+
         ciudadRepo.findById(dto.getIdCiudad())
                 .orElseThrow(() -> new Excepcion("Asistido", "Ciudad no encontrada", 400));
 
-       
         if (dto.getDni() != null && repo.findByDni(dto.getDni()).isPresent()) {
             throw new Excepcion("Asistido", "Ya existe un asistido con ese DNI", 400);
         }
 
-    
         Optional<Asistido> existente = repo.findByNombreCompleto(dto.getNombreCompleto());
 
         if (existente.isPresent()) {
             if (dto.getApodo() == null || dto.getApodo().isBlank()) {
-                throw new Excepcion("Asistido",
-                        "Nombre repetido. Debe ingresar un apodo.",
-                        400);
+                throw new Excepcion("Asistido", "Nombre repetido. Debe ingresar un apodo.", 400);
             }
 
-            
             String nombreConApodo = dto.getNombreCompleto() + " (" + dto.getApodo() + ")";
             dto.setNombreCompleto(nombreConApodo);
         }
@@ -69,18 +71,23 @@ public class AsistidoServiceImpl implements AsistidoService {
         Asistido asistido = repo.findById(id)
                 .orElseThrow(() -> new Excepcion("Asistido", "No existe un asistido con ese id", 404));
 
-    
+        if (dto.getNombreCompleto() == null || dto.getNombreCompleto().isBlank()) {
+            throw new Excepcion("Asistido", "El asistido debe tener un nombre completo", 400);
+        }
+
+        if (dto.getEdad() == null || dto.getEdad() <= 0) {
+            throw new Excepcion("Asistido", "La edad es obligatoria y debe ser mayor a cero", 400);
+        }
+
         ciudadRepo.findById(dto.getIdCiudad())
                 .orElseThrow(() -> new Excepcion("Asistido", "Ciudad no encontrada", 400));
 
-      
         repo.findByNombreCompleto(dto.getNombreCompleto())
                 .filter(a -> !a.getId().equals(id))
                 .ifPresent(a -> {
                     throw new Excepcion("Asistido", "Ya existe otro asistido con ese nombre", 400);
                 });
 
-  
         if (dto.getDni() != null) {
             repo.findByDni(dto.getDni())
                     .filter(a -> !a.getId().equals(id))
@@ -106,3 +113,4 @@ public class AsistidoServiceImpl implements AsistidoService {
         repo.deleteById(id);
     }
 }
+
