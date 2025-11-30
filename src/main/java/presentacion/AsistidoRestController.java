@@ -13,7 +13,7 @@ import entidades.Asistido;
 import servicios.AsistidoService;
 
 @RestController
-@RequestMapping("/api/asistidos")
+@RequestMapping("/asistidos")
 public class AsistidoRestController {
 
     @Autowired
@@ -35,9 +35,9 @@ public class AsistidoRestController {
 
         AsistidoResponseDTO dto = new AsistidoResponseDTO(asistido);
 
-        dto.add(Link.of("/api/asistidos/" + id).withSelfRel());
-        dto.add(Link.of("/api/ciudades/" + asistido.getIdCiudad()).withRel("ciudad"));
-        dto.add(Link.of("/api/asistencias?asistidoId=" + id).withRel("asistencias"));
+        dto.add(Link.of("/asistidos/" + id).withSelfRel());
+        dto.add(Link.of("/ciudades/" + asistido.getIdCiudad()).withRel("ciudad"));
+        dto.add(Link.of("/asistencias?asistidoId=" + id).withRel("asistencias"));
 
         return ResponseEntity.ok(dto);
     }
@@ -67,4 +67,5 @@ public class AsistidoRestController {
         asistidoService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
 }
