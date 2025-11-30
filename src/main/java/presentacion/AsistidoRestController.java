@@ -1,7 +1,9 @@
 package presentacion;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,26 +48,47 @@ public class AsistidoRestController {
     public ResponseEntity<?> crear(@RequestBody AsistidoDTO dto) {
         try {
             Long id = asistidoService.insert(dto);
-            return ResponseEntity.created(URI.create("/api/asistidos/" + id)).build();
+
+            Map<String, Object> respuesta = new HashMap<>();
+            respuesta.put("mensaje", "Creado con éxito");
+            respuesta.put("id", id);
+
+            return ResponseEntity
+                    .created(URI.create("/asistidos/" + id))
+                    .body(respuesta);
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    
+    
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizar(@PathVariable Long id, @RequestBody AsistidoDTO dto) {
         try {
             Asistido actualizado = asistidoService.update(dto, id);
-            return ResponseEntity.ok(actualizado);
+
+            Map<String, Object> respuesta = new HashMap<>();
+            respuesta.put("mensaje", "Actualizado con éxito");
+            respuesta.put("id", actualizado.getId());
+
+            return ResponseEntity.ok(respuesta);
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
         asistidoService.delete(id);
-        return ResponseEntity.noContent().build();
+
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("mensaje", "Eliminado con éxito");
+        respuesta.put("id", id);
+
+        return ResponseEntity.ok(respuesta);
     }
 
 }
