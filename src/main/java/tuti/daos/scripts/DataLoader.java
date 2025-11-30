@@ -29,7 +29,7 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (ciudadRepo.count() == 0) {
+       if (ciudadRepo.count() == 0) {
             String[] ciudades = { "Buenos Aires", "Córdoba", "Rosario", "Mendoza", "La Plata",
                     "San Miguel de Tucumán", "Mar del Plata", "Salta", "Santa Fe", "Corrientes",
                     "Resistencia", "Bahía Blanca", "Paraná", "San Salvador de Jujuy", "Neuquén" };
@@ -42,10 +42,28 @@ public class DataLoader implements CommandLineRunner {
             String[] nombres = { "Lionel Messi", "Ángel Di María", "Sergio Agüero", "Carlos Tevez",
                     "Diego Maradona", "Javier Mascherano", "Gonzalo Higuaín", "Paulo Dybala",
                     "Alejandro Papu Gómez", "Rodrigo De Paul" };
-            String[] apodos = { "La Pulga", "Fideo", "Kun", "Apache", "Pelusa", "Jefecito", "Pipa", "Joya", "Papu",
-                    "Motorcito" };
-            List<Ciudad> todasCiudades = ciudadRepo.findAll();
+
+            String[] apodos = { "La Pulga", "Fideo", "Kun", "Apache", "Pelusa", "Jefecito",
+                    "Pipa", "Joya", "Papu", "Motorcito" };
+
+          
+            String[] ciudadJugador = {
+                "Rosario",        
+                "Rosario",         
+                "Buenos Aires",   
+                "Buenos Aires",  
+                "Buenos Aires",   
+                "Santa Fe",        
+                "Buenos Aires",  
+                "Córdoba",         
+                "Buenos Aires",    
+                "Buenos Aires"     
+            };
+
             for (int i = 0; i < nombres.length; i++) {
+
+                Ciudad ciudad = ciudadRepo.findByNombre(ciudadJugador[i]);
+
                 Asistido a = new Asistido();
                 a.setNombreCompleto(nombres[i]);
                 a.setApodo(apodos[i]);
@@ -53,7 +71,7 @@ public class DataLoader implements CommandLineRunner {
                 a.setDni(30000000 + i * 12345);
                 a.setDomicilio("Calle Fútbol " + (10 + i));
                 a.setFechaNacimiento(LocalDate.of(1990 + i % 5, 3, 10 + (i % 10)));
-                a.setIdCiudad(todasCiudades.get(i % todasCiudades.size()).getId());
+                a.setIdCiudad(ciudad.getId());
                 asistidoRepo.save(a);
             }
         }
