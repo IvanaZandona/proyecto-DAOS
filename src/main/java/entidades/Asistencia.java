@@ -1,28 +1,25 @@
 package entidades;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.*;
 
 @Entity
 public class Asistencia {
 	
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	
-	 @OneToOne
-	    @JoinColumn(name = "racion_id") // FK en la tabla Asistencia
-	    private Racion racion;
+	@ManyToOne
+	@JoinColumn(name = "racion_id") 
+	private Racion racion;
 	
 	@Column
 	private LocalDate fechaEntrega;
 
-	  @OneToOne
-	    @JoinColumn(name = "asistido_id") // FK en la tabla Asistencia
-	    private Asistido asistido;
+	@ManyToOne
+	@JoinColumn(name = "asistido_id") 
+	private Asistido asistido;
 	
 	public Asistencia() {}
 
@@ -57,9 +54,4 @@ public class Asistencia {
 	public void setAsistido(Asistido asistido) {
 		this.asistido = asistido;
 	}
-
-
-
-	
-
 }

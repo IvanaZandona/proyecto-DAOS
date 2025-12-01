@@ -1,6 +1,9 @@
 package presentacion;
 
 import org.springframework.hateoas.RepresentationModel;
+
+import entidades.Racion;
+
 import java.time.LocalDate;
 
 public class RacionResponseDTO extends RepresentationModel<RacionResponseDTO> {
@@ -12,7 +15,15 @@ public class RacionResponseDTO extends RepresentationModel<RacionResponseDTO> {
     private LocalDate fechaPreparacion;
     private LocalDate fechaVencimiento;
 
-    // Getters y Setters
+    public RacionResponseDTO(Racion pojo) {
+        this.id = pojo.getId();
+        this.stockPreparado = pojo.getStockPreparado();
+        this.stockRestante = pojo.getStockRestante(); // Dato de solo lectura
+        this.idReceta = pojo.getReceta() != null ? pojo.getReceta().getId() : null;
+        this.fechaPreparacion = pojo.getFechaPreparacion();
+        this.fechaVencimiento = pojo.getFechaVencimiento();
+    }
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

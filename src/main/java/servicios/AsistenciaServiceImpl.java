@@ -42,6 +42,11 @@ public class AsistenciaServiceImpl implements AsistenciaService {
     public Optional<Asistencia> getByFechaEntrega(LocalDate fechaEntrega) {
         return asisRepo.findByFechaEntrega(fechaEntrega);
     }
+    
+    @Override
+    public List<Asistencia> buscarPorAsistido(Long idAsistido) {
+        return asisRepo.findByAsistidoId(idAsistido);
+    }
 
     @Override
     public Long insert(AsistenciaDTO dto) throws Exception {
@@ -52,13 +57,23 @@ public class AsistenciaServiceImpl implements AsistenciaService {
         Racion racion = r.findById(dto.getIdRacion())
             .orElseThrow(() -> new Excepcion("Racion", "No encontrada", 404));
         
-        
-        // VALIDAR FECHA DE RACIÓN
+        // VALIDAR FECHA DE RACIÓN 
         if (dto.getFechaEntrega().isAfter(racion.getFechaVencimiento())) {
             throw new Excepcion("FechaEntrega", 
                 "La fecha de entrega NO puede ser posterior a la fecha de vencimiento de la ración", 
                 400);
         }
+        
+        // Validar que haya stock disponible
+        if (racion.getStockRestante() <= 0) {
+            throw new Excepcion("Stock", "No queda stock disponible de esta ración", 400);
+        }
+
+        // Descontar 1 del stock
+        racion.setStockRestante(racion.getStockRestante() - 1);
+        
+        // Guardar la actualización de la ración en la BD
+        r.save(racion);
 
         Asistencia asistencia = new Asistencia();
         asistencia.setFechaEntrega(dto.getFechaEntrega());
@@ -69,6 +84,7 @@ public class AsistenciaServiceImpl implements AsistenciaService {
 
         return asistencia.getId();
     }
+ 
 
     @Override
     public Asistencia update(AsistenciaDTO dto, Long id) throws Exception {

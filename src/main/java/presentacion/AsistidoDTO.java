@@ -1,22 +1,34 @@
 package presentacion;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import entidades.Asistido;
 
 public class AsistidoDTO {
 
-    @Size(min = 2, max = 60)
+	@NotBlank(message = "El nombre completo es obligatorio")
+    @Size(min = 2, max = 60, message = "El nombre debe tener entre 2 y 60 caracteres")
     private String nombreCompleto;
 
+	@Positive(message = "El DNI debe ser un número positivo")
     private Integer dni;
+	
     private String domicilio;
+    
+    @Past(message = "La fecha de nacimiento debe ser anterior a hoy")
     private LocalDate fechaNacimiento;
 
-    @Min(0)
+    @NotNull(message = "La edad es obligatoria")
+    @Min(value = 0, message = "La edad no puede ser negativa")
     private Integer edad;
 
+    @NotNull(message = "La ciudad es obligatoria")
+    @Positive(message = "El ID de ciudad debe ser positivo")
     private Long idCiudad;
 
     private String apodo;

@@ -3,6 +3,11 @@ package presentacion;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
+import accesoDatos.RecetaRepository;
+import entidades.Racion;
+import entidades.Receta;
+import excepciones.Excepcion;
+
 public class RacionDTO {
 
     @NotNull(message = "El stock preparado es obligatorio")
@@ -19,7 +24,26 @@ public class RacionDTO {
     @NotNull(message = "La fecha de vencimiento es obligatoria")
     private LocalDate fechaVencimiento;
 
-    // Getters y Setters
+    public Racion toPojo(RecetaRepository recetaRepo) {
+        Receta receta = recetaRepo.findById(this.idReceta)
+            .orElseThrow(() -> new Excepcion("Receta", "No encontrada con ID: " + this.idReceta, 404));
+
+        if (this.fechaVencimiento.isBefore(this.fechaPreparacion)) {
+            throw new Excepcion("Fechas", "La fecha de vencimiento no puede ser anterior a la de preparación", 400);
+        }
+
+        Racion racion = new Racion();
+        racion.setStockPreparado(this.stockPreparado);
+        
+        racion.setStockRestante(this.stockPreparado); 
+        
+        racion.setReceta(receta);
+        racion.setFechaPreparacion(this.fechaPreparacion);
+        racion.setFechaVencimiento(this.fechaVencimiento);
+        
+        return racion;
+    }
+    
     public Integer getStockPreparado() { return stockPreparado; }
     public void setStockPreparado(Integer stockPreparado) { 
         this.stockPreparado = stockPreparado;

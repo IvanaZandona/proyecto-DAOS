@@ -23,7 +23,6 @@ public class RecetaDTO {
     public Integer getCaloriasRacion() { return caloriasRacion; }
     public void setCaloriasRacion(Integer caloriasRacion) { this.caloriasRacion = caloriasRacion; }
     
-    // Método  convertir DTO a una Entidad (POJO)
     public Receta toPojo() {
         Receta receta = new Receta();
         receta.setNombre(this.nombre);
