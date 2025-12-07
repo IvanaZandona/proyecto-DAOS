@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+# Servicio de base de datos MySQL
+  mysql:
+    image: mysql:8										# imagen oficial MySQL 8 (estable y compatible)
+    container_name: daos_mysql							# nombre claro y reproducible del contenedor
+    restart: always										# reiniciar si el contenedor falla (útil en dev)
+    environment:										# variables que inicializan la DB desde .env
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+	  # NOTA: no usamos MYSQL_USER/MYSQL_PASSWORD con root (evita error de config)
+    ports:
+      - "3307:3306"										# mapea puerto host 3307 -> puerto interno 3306
+	  													# (evita choque con MySQL local si existe)
+    volumes:
+      - mysql_data:/var/lib/mysql						# volumen persistente para datos de la BD
+    networks:
+      - daos_net										# red dedicada del proyecto (ver más abajo)
+    healthcheck:										# healthcheck para esperar que MySQL esté listo
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+# Servicio de la API (Spring Boot)
+  api:
+    build: .											# construye imagen a partir del Dockerfile del repo
+    container_name: daos_api
+    depends_on:
+      mysql:
+        condition: service_healthy						# espera a que MySQL pase el healthcheck
+    ports:
+      - "8080:8080"										# expone la API en localhost:8080
+    environment:										# variables de conexión inyectadas desde .env
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    restart: on-failure									# reinicia solo si falla (no en stop intencional)
+    networks:
+      - daos_net
+
+# Adminer: interfaz web para administrar la BD (opcional pero útil)
+  adminer:
+    image: adminer
+    container_name: daos_adminer
+    restart: always
+    ports:
+      - "8081:8080"										# acceder en localhost:8081
+    depends_on:
+      - mysql
+    networks:
+      - daos_net
+
+# Definición de volúmenes (persistencia)
+volumes:
+  mysql_data:
+
+# Definición explícita de la red del proyecto (mejora claridad)
+networks:
+  daos_net:
